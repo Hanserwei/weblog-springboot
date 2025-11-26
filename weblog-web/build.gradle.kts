@@ -13,6 +13,9 @@ dependencies {
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
+    // jsr380
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
     // 其他依赖…
     implementation(project(":weblog-module-common"))
     implementation(project(":weblog-module-admin"))

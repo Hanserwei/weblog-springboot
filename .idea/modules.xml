@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/weblog-springboot.iml" filepath="$PROJECT_DIR$/weblog-springboot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weblog-module-common/weblog-springboot.weblog-module-common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/weblog-module-common/weblog-springboot.weblog-module-common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weblog-web/weblog-springboot.weblog-web.main.iml" filepath="$PROJECT_DIR$/.idea/modules/weblog-web/weblog-springboot.weblog-web.main.iml" />
     </modules>
   </component>
 </project>

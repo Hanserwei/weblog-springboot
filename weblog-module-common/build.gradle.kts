@@ -15,4 +15,6 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core")
     // aop
     implementation("org.springframework.boot:spring-boot-starter-aop")
+    // web
+    implementation("org.springframework.boot:spring-boot-starter-web")
 }
