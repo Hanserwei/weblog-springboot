@@ -9,7 +9,6 @@ dependencies {
     // Spring Boot Web（示例）
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
