@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/weblog-springboot.iml" filepath="$PROJECT_DIR$/weblog-springboot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/weblog-module-admin/weblog-springboot.weblog-module-admin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/weblog-module-admin/weblog-springboot.weblog-module-admin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/weblog-module-common/weblog-springboot.weblog-module-common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/weblog-module-common/weblog-springboot.weblog-module-common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weblog-module-jwt/weblog-springboot.weblog-module-jwt.main.iml" filepath="$PROJECT_DIR$/.idea/modules/weblog-module-jwt/weblog-springboot.weblog-module-jwt.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/weblog-web/weblog-springboot.weblog-web.main.iml" filepath="$PROJECT_DIR$/.idea/modules/weblog-web/weblog-springboot.weblog-web.main.iml" />
     </modules>
   </component>
 </project>

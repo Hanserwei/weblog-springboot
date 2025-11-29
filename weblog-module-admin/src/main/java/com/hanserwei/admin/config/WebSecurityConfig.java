@@ -1,12 +1,15 @@
 package com.hanserwei.admin.config;
 
 import com.hanserwei.jwt.config.JwtAuthenticationSecurityConfig;
+import com.hanserwei.jwt.handler.RestAccessDeniedHandler;
+import com.hanserwei.jwt.handler.RestAuthenticationEntryPoint;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,10 +20,17 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
 
     @Resource
     private JwtAuthenticationSecurityConfig jwtAuthenticationSecurityConfig;
+
+    @Resource
+    private RestAccessDeniedHandler restAccessDeniedHandler;
+
+    @Resource
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,7 +48,12 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // 5. 应用自定义配置 (核心变化)
+                // 5. 自定义未登录/权限不足的响应
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(restAuthenticationEntryPoint)
+                        .accessDeniedHandler(restAccessDeniedHandler)
+                )
+                // 6. 应用自定义配置 (核心变化)
                 .with(jwtAuthenticationSecurityConfig, Customizer.withDefaults());
         return http.build();
     }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.util.Optional;
 
 @ControllerAdvice
@@ -74,6 +75,13 @@ public class GlobalExceptionHandler {
         log.warn("{} request error, errorCode: {}, errorMessage: {}", request.getRequestURI(), errorCode, errorMessage);
 
         return Response.fail(errorCode, errorMessage);
+    }
+
+    @ExceptionHandler({ AccessDeniedException.class })
+    public void throwAccessDeniedException(AccessDeniedException e) throws AccessDeniedException {
+        // 捕获到鉴权失败异常，主动抛出，交给 RestAccessDeniedHandler 去处理
+        log.info("============= 捕获到 AccessDeniedException");
+        throw e;
     }
 
 }

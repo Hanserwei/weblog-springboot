@@ -2,12 +2,10 @@ plugins {
     `java-library`
 }
 
-group = "com.hanserwei.jwt"
-version = project.parent?.version ?: "0.0.1-SNAPSHOT"
-
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    api("org.springframework.boot:spring-boot-starter-security")
     implementation(project(":weblog-module-common"))
+    implementation("org.apache.commons:commons-lang3:3.20.0")
 
     // jwt
     api(libs.jjwt.api)

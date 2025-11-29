@@ -1,6 +1,7 @@
 package com.hanserwei.jwt.config;
 
 import com.hanserwei.jwt.filter.JwtAuthenticationFilter;
+import com.hanserwei.jwt.filter.TokenAuthenticationFilter;
 import com.hanserwei.jwt.handler.RestAuthenticationFailureHandler;
 import com.hanserwei.jwt.handler.RestAuthenticationSuccessHandler;
 import jakarta.annotation.Resource;
@@ -20,6 +21,9 @@ public class JwtAuthenticationSecurityConfig extends SecurityConfigurerAdapter<D
     @Resource
     private RestAuthenticationFailureHandler restAuthenticationFailureHandler;
 
+    @Resource
+    private TokenAuthenticationFilter tokenAuthenticationFilter;
+
     @Override
     public void configure(HttpSecurity httpSecurity) {
         // 1. 实例化自定义过滤器
@@ -35,5 +39,8 @@ public class JwtAuthenticationSecurityConfig extends SecurityConfigurerAdapter<D
         // 4. 将过滤器添加到 UsernamePasswordAuthenticationFilter 之前
         // (JWT 校验通常在用户名密码校验之前，或者用来替换它，addFilterBefore 是最稳妥的)
         httpSecurity.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+
+        // 5. 在链路中加入 Token 校验过滤器，确保携带 Token 的请求被识别为已登录
+        httpSecurity.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
