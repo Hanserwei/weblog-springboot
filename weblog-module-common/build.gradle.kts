@@ -18,7 +18,7 @@ dependencies {
     // aop
     implementation("org.springframework.boot:spring-boot-starter-aop")
     // web
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    api("org.springframework.boot:spring-boot-starter-web")
     // postgresql
     runtimeOnly("org.postgresql:postgresql")
 }

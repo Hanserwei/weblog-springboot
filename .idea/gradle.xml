@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/weblog-module-admin" />
             <option value="$PROJECT_DIR$/weblog-module-common" />
+            <option value="$PROJECT_DIR$/weblog-module-jwt" />
             <option value="$PROJECT_DIR$/weblog-web" />
           </set>
         </option>

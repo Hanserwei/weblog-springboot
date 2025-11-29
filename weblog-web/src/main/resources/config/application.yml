@@ -3,3 +3,8 @@ spring:
     name: han-blog
   profiles:
     active: dev
+jwt:
+  # 签发人
+  issuer: Hanserwei
+  # 秘钥
+  secret: P81m2EjMkZj74ht+OuBCxsf25if8PzghbEEWASyf4zcYnxwwn3VbCiIohxmowYg/8I4mj6eJdaqLbJEhggUq3Q==

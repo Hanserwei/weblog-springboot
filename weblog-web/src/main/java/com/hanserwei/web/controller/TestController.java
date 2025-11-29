@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TestController {
 
-    @PostMapping("/test")
+    @PostMapping("/admin/test")
     @ApiOperationLog(description = "测试接口")
-    public ResponseEntity<String> test(@RequestBody @Validated User user, BindingResult bindingResult) {
+    public ResponseEntity<String>test(@RequestBody @Validated User user, BindingResult bindingResult) {
         // 是否存在校验错误
         if (bindingResult.hasErrors()) {
             // 获取校验不通过字段的提示信息

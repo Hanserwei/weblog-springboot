@@ -1,0 +1,10 @@
+[versions]
+# 定义版本号
+jjwt = "0.13.0"
+
+[libraries]
+# 定义依赖包的别名 (bundles 是可选的，libraries 是必须的)
+# 对应 Maven 的 <groupId>io.jsonwebtoken</groupId>
+jjwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jjwt" }
