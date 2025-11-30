@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serial;
@@ -18,7 +20,9 @@ import java.time.Instant; // 推荐用于 TIMESTAMP WITH TIME ZONE
 @Setter
 @Getter
 @Builder
-@Table(name = "t_user") // 对应数据库中的表名
+@Table(name = "t_user")
+@SQLRestriction("is_deleted = false")
+@SQLDelete(sql = "UPDATE t_user SET is_deleted = true WHERE id = ?")
 public class User implements Serializable {
 
     @Serial

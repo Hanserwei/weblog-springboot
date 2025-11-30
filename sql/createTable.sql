@@ -40,11 +40,59 @@ CREATE TABLE t_user_role
     id          BIGSERIAL PRIMARY KEY,
     username    VARCHAR(60)                 NOT NULL,
     role_name   VARCHAR(60)                 NOT NULL, -- 重命名为 role_name 避免关键字冲突
-    create_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_username ON t_user_role (username);
 
 COMMENT ON COLUMN t_user_role.role_name IS '角色名称';
+-- 为 t_user_role 表创建触发器
+CREATE TRIGGER set_t_user_role_update_time
+    BEFORE UPDATE
+    ON t_user_role
+    FOR EACH ROW
+EXECUTE FUNCTION set_update_time();
+-- ====================================================================================================================
+-- ====================================================================================================================
+
+-- ====================================================================================================================
+-- ====================================================================================================================
+CREATE TABLE t_category
+(
+    -- id：对应 MySQL 的 bigint(20) unsigned NOT NULL AUTO_INCREMENT
+    id          BIGSERIAL PRIMARY KEY,
+
+    -- 分类名称：VARCHAR(60) NOT NULL DEFAULT ''，同时是 UNIQUE 约束
+    "name"      VARCHAR(60)                 NOT NULL DEFAULT '',
+
+    -- 创建时间
+    create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    -- 最后一次更新时间
+    update_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    -- 逻辑删除标志位：tinyint(2) NOT NULL DEFAULT '0'，改为 BOOLEAN
+    is_deleted  BOOLEAN                     NOT NULL DEFAULT FALSE,
+
+    -- UNIQUE KEY uk_name (`name`)
+    CONSTRAINT uk_name UNIQUE ("name")
+);
+
+-- 添加非唯一索引（对应 MySQL 的 KEY `idx_create_time`）
+CREATE INDEX idx_create_time ON t_category (create_time);
+
+-- 可选：添加注释
+COMMENT ON TABLE t_category IS '文章分类表';
+COMMENT ON COLUMN t_category.id IS '分类id';
+COMMENT ON COLUMN t_category.name IS '分类名称';
+COMMENT ON COLUMN t_category.create_time IS '创建时间';
+COMMENT ON COLUMN t_category.update_time IS '最后一次更新时间';
+COMMENT ON COLUMN t_category.is_deleted IS '逻辑删除标志位：FALSE：未删除 TRUE：已删除';
+-- 为 t_category 表创建触发器
+CREATE TRIGGER set_t_category_update_time
+    BEFORE UPDATE
+    ON t_category
+    FOR EACH ROW
+EXECUTE FUNCTION set_update_time();
 -- ====================================================================================================================
 -- ====================================================================================================================
