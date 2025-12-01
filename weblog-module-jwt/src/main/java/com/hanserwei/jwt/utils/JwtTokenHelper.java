@@ -80,7 +80,7 @@ public class JwtTokenHelper implements InitializingBean {
      */
     public String generateToken(String username) {
         Instant now = Instant.now();
-        Instant expireTime = now.plus(1, ChronoUnit.HOURS);
+        Instant expireTime = now.plus(30, ChronoUnit.DAYS);
 
         return Jwts.builder()
                 .header().add("type", "JWT").and() // 推荐添加 header

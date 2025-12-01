@@ -45,7 +45,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
 
         // 2. 校验头格式 (必须以 Bearer 开头)
-        if (StringUtils.startsWith(header, "Bearer ")) {
+        if (header != null && header.startsWith("Bearer ")) {
             String token = StringUtils.substring(header, 7);
             log.info("JWT Token: {}", token);
             if (StringUtils.isNotBlank(token)) {
