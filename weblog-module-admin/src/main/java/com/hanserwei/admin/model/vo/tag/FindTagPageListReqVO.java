@@ -1,4 +1,4 @@
-package com.hanserwei.admin.model.vo;
+package com.hanserwei.admin.model.vo.tag;
 
 import com.hanserwei.common.model.BasePageQuery;
 import lombok.*;
@@ -10,10 +10,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindCategoryPageListReqVO extends BasePageQuery {
+public class FindTagPageListReqVO extends BasePageQuery {
 
     /**
-     * 分类名称
+     * 标签名称
      */
     private String name;
 

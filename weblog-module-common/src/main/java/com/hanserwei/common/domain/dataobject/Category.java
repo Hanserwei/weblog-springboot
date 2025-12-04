@@ -27,7 +27,6 @@ import java.time.Instant;
            @Index(name = "idx_create_time", columnList = "create_time")
        })
 @SQLRestriction("is_deleted = false")
-@SQLDelete(sql = "UPDATE t_category SET is_deleted = true WHERE id = ?")
 public class Category implements Serializable {
 
     @Serial

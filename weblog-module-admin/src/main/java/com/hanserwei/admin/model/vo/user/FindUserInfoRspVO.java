@@ -1,4 +1,4 @@
-package com.hanserwei.admin.model.vo;
+package com.hanserwei.admin.model.vo.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

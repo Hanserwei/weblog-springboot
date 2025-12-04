@@ -1,7 +1,7 @@
 package com.hanserwei.admin.controller;
 
-import com.hanserwei.admin.model.vo.FindUserInfoRspVO;
-import com.hanserwei.admin.model.vo.UpdateAdminUserPasswordReqVO;
+import com.hanserwei.admin.model.vo.user.FindUserInfoRspVO;
+import com.hanserwei.admin.model.vo.user.UpdateAdminUserPasswordReqVO;
 import com.hanserwei.admin.service.AdminUserService;
 import com.hanserwei.common.aspect.ApiOperationLog;
 import com.hanserwei.common.utils.Response;

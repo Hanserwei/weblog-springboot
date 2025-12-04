@@ -38,8 +38,8 @@ COMMENT ON COLUMN t_user.is_deleted IS '逻辑删除：FALSE：未删除 TRUE：
 CREATE TABLE t_user_role
 (
     id          BIGSERIAL PRIMARY KEY,
-    username    VARCHAR(60)                 NOT NULL,
-    role_name   VARCHAR(60)                 NOT NULL, -- 重命名为 role_name 避免关键字冲突
+    username    VARCHAR(60)              NOT NULL,
+    role_name   VARCHAR(60)              NOT NULL, -- 重命名为 role_name 避免关键字冲突
     create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
@@ -63,7 +63,7 @@ CREATE TABLE t_category
     id          BIGSERIAL PRIMARY KEY,
 
     -- 分类名称：VARCHAR(60) NOT NULL DEFAULT ''，同时是 UNIQUE 约束
-    "name"      VARCHAR(60)                 NOT NULL DEFAULT '',
+    "name"      VARCHAR(60)              NOT NULL DEFAULT '',
 
     -- 创建时间
     create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -72,7 +72,7 @@ CREATE TABLE t_category
     update_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 
     -- 逻辑删除标志位：tinyint(2) NOT NULL DEFAULT '0'，改为 BOOLEAN
-    is_deleted  BOOLEAN                     NOT NULL DEFAULT FALSE,
+    is_deleted  BOOLEAN                  NOT NULL DEFAULT FALSE,
 
     -- UNIQUE KEY uk_name (`name`)
     CONSTRAINT uk_name UNIQUE ("name")
@@ -92,6 +92,52 @@ COMMENT ON COLUMN t_category.is_deleted IS '逻辑删除标志位：FALSE：未�
 CREATE TRIGGER set_t_category_update_time
     BEFORE UPDATE
     ON t_category
+    FOR EACH ROW
+EXECUTE FUNCTION set_update_time();
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- 1. 创建表结构
+CREATE TABLE t_tag
+(
+    -- id: 使用 BIG SERIAL，自动创建序列，性能优异
+    id          BIGSERIAL PRIMARY KEY,
+
+    -- name: 保持 VARCHAR(60)，但在 PG 中 TEXT 和 VARCHAR 性能一样，
+    -- 这里为了保留原表 "60字符限制" 的业务逻辑，继续使用 VARCHAR(60)
+    name        VARCHAR(60)              NOT NULL DEFAULT '',
+
+    -- create_time: 使用带时区的时间戳，更标准严谨
+    create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- update_time: 同上
+    update_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- is_deleted: 使用原生 BOOLEAN 类型，存储效率高且语义明确
+    is_deleted  BOOLEAN                  NOT NULL DEFAULT FALSE,
+
+    -- 约束：显式命名约束，方便后续维护（如报错时能看到具体约束名）
+    CONSTRAINT uk_tag_name UNIQUE (name)
+);
+
+-- 2. 创建普通索引
+-- 对应 MySQL 的 KEY `idx_create_time`
+CREATE INDEX idx_tag_create_time ON t_tag (create_time);
+
+-- 3. 添加注释 (PostgreSQL 标准方式)
+COMMENT ON TABLE t_tag IS '文章标签表';
+COMMENT ON COLUMN t_tag.id IS '标签id';
+COMMENT ON COLUMN t_tag.name IS '标签名称';
+COMMENT ON COLUMN t_tag.create_time IS '创建时间';
+COMMENT ON COLUMN t_tag.update_time IS '最后一次更新时间';
+COMMENT ON COLUMN t_tag.is_deleted IS '逻辑删除标志位：FALSE：未删除 TRUE：已删除';
+
+-- 4. 应用自动更新时间戳触发器 (体现 PostgreSQL 强大的过程语言优势)
+-- 前提：您之前已经执行过 CREATE FUNCTION set_update_time() ...
+CREATE TRIGGER set_t_tag_update_time
+    BEFORE UPDATE
+    ON t_tag
     FOR EACH ROW
 EXECUTE FUNCTION set_update_time();
 -- ====================================================================================================================

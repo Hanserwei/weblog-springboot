@@ -18,8 +18,9 @@ public enum ResponseCodeEnum implements BaseExceptionInterface {
     UNAUTHORIZED("20002", "无访问权限，请先登录！"),
     FORBIDDEN("20004", "演示账号仅支持查询操作！"),
     USER_NOT_EXIST("2005", "有户不存在！"),
-    CATEGORY_NAME_IS_EXISTED("20005", "该分类已存在，请勿重复添加！")
-    ;
+    CATEGORY_NAME_IS_EXISTED("20005", "该分类已存在，请勿重复添加！"),
+    TAG_NOT_EXIST("20006", "标签不存在！"),
+    CATEGORY_NOT_EXIST("20007", "分类不存在！" );
 
     // 异常码
     private final String errorCode;

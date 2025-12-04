@@ -1,4 +1,4 @@
-package com.hanserwei.admin.model.vo;
+package com.hanserwei.admin.model.vo.tag;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DeleteCategoryReqVO {
+public class DeleteTagReqVO {
 
-    @NotNull(message = "分类 ID 不能为空")
+    /**
+     * 标签 ID
+     */
+    @NotNull(message = "标签 ID 不能为空")
     private Long id;
-
 }

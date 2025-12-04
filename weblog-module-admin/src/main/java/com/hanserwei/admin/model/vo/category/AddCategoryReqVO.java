@@ -1,4 +1,4 @@
-package com.hanserwei.admin.model.vo;
+package com.hanserwei.admin.model.vo.category;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

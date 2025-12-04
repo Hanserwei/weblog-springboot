@@ -1,9 +1,9 @@
 package com.hanserwei.admin.service;
 
-import com.hanserwei.admin.model.vo.AddCategoryReqVO;
-import com.hanserwei.admin.model.vo.DeleteCategoryReqVO;
-import com.hanserwei.admin.model.vo.FindCategoryPageListReqVO;
-import com.hanserwei.admin.model.vo.FindCategoryPageListRspVO;
+import com.hanserwei.admin.model.vo.category.AddCategoryReqVO;
+import com.hanserwei.admin.model.vo.category.DeleteCategoryReqVO;
+import com.hanserwei.admin.model.vo.category.FindCategoryPageListReqVO;
+import com.hanserwei.admin.model.vo.category.FindCategoryPageListRspVO;
 import com.hanserwei.common.model.vo.SelectRspVO;
 import com.hanserwei.common.utils.PageResponse;
 import com.hanserwei.common.utils.Response;
