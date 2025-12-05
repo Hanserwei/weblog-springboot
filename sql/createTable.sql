@@ -142,3 +142,47 @@ CREATE TRIGGER set_t_tag_update_time
 EXECUTE FUNCTION set_update_time();
 -- ====================================================================================================================
 -- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+CREATE TABLE t_blog_settings
+(
+    -- id: 使用 BIGSERIAL 自动管理序列
+    id              BIGSERIAL PRIMARY KEY,
+
+    -- logo: 图片路径可能很长，使用 TEXT 替代 VARCHAR(120)，无性能损耗
+    logo            TEXT        NOT NULL DEFAULT '',
+
+    -- name: 博客名称通常较短，保留 VARCHAR 限制也是一种合理的业务约束
+    name            VARCHAR(60) NOT NULL DEFAULT '',
+
+    -- author: 作者名同上
+    author          VARCHAR(20) NOT NULL DEFAULT '',
+
+    -- introduction: 介绍语可能会变长，使用 TEXT 更灵活
+    introduction    TEXT        NOT NULL DEFAULT '',
+
+    -- avatar: 头像路径，使用 TEXT
+    avatar          TEXT        NOT NULL DEFAULT '',
+
+    -- 下面的主页链接：原 MySQL 定义 varchar(60) 风险很高，
+    -- 现在的 URL 很容易超过 60 字符，PG 使用 TEXT 完美解决
+    github_homepage TEXT        NOT NULL DEFAULT '',
+    csdn_homepage   TEXT        NOT NULL DEFAULT '',
+    gitee_homepage  TEXT        NOT NULL DEFAULT '',
+    zhihu_homepage  TEXT        NOT NULL DEFAULT ''
+);
+
+-- 添加注释
+COMMENT ON TABLE t_blog_settings IS '博客设置表';
+COMMENT ON COLUMN t_blog_settings.id IS 'id';
+COMMENT ON COLUMN t_blog_settings.logo IS '博客Logo';
+COMMENT ON COLUMN t_blog_settings.name IS '博客名称';
+COMMENT ON COLUMN t_blog_settings.author IS '作者名';
+COMMENT ON COLUMN t_blog_settings.introduction IS '介绍语';
+COMMENT ON COLUMN t_blog_settings.avatar IS '作者头像';
+COMMENT ON COLUMN t_blog_settings.github_homepage IS 'GitHub 主页访问地址';
+COMMENT ON COLUMN t_blog_settings.csdn_homepage IS 'CSDN 主页访问地址';
+COMMENT ON COLUMN t_blog_settings.gitee_homepage IS 'Gitee 主页访问地址';
+COMMENT ON COLUMN t_blog_settings.zhihu_homepage IS '知乎主页访问地址';
+-- ====================================================================================================================
+-- ====================================================================================================================

@@ -13,6 +13,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-web")
     api("org.springframework.boot:spring-boot-starter-security")
     api("org.springframework.boot:spring-boot-starter-aop")
+    api("software.amazon.awssdk:s3:2.40.1")
 
     runtimeOnly("org.postgresql:postgresql")
 
