@@ -1,9 +1,6 @@
 package com.hanserwei.admin.controller;
 
-import com.hanserwei.admin.model.vo.category.AddCategoryReqVO;
-import com.hanserwei.admin.model.vo.category.DeleteCategoryReqVO;
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListReqVO;
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListRspVO;
+import com.hanserwei.admin.model.vo.category.*;
 import com.hanserwei.admin.service.AdminCategoryService;
 import com.hanserwei.common.aspect.ApiOperationLog;
 import com.hanserwei.common.model.vo.SelectRspVO;
@@ -11,10 +8,7 @@ import com.hanserwei.common.utils.PageResponse;
 import com.hanserwei.common.utils.Response;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -62,6 +56,15 @@ public class AdminCategoryController {
     @ApiOperationLog(description = "分类 Select 下拉列表数据获取")
     public Response<List<SelectRspVO>> findCategorySelectList() {
         return adminCategoryService.findCategorySelectList();
+    }
+
+    /**
+     * 根据分类ID查询
+     */
+    @GetMapping("/category/find/{id}")
+    @ApiOperationLog(description = "根据分类ID查询")
+    public Response<FindCategoryByIdRspVO> findCategoryById(@PathVariable Long id) {
+        return adminCategoryService.findCategoryById(id);
     }
 
 }

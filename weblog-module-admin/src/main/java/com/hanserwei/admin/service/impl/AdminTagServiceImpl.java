@@ -2,9 +2,12 @@ package com.hanserwei.admin.service.impl;
 
 import com.hanserwei.admin.model.vo.tag.*;
 import com.hanserwei.admin.service.AdminTagService;
+import com.hanserwei.common.domain.dataobject.ArticleTagRel;
 import com.hanserwei.common.domain.dataobject.Tag;
+import com.hanserwei.common.domain.repository.ArticleTagRelRepository;
 import com.hanserwei.common.domain.repository.TagRepository;
 import com.hanserwei.common.enums.ResponseCodeEnum;
+import com.hanserwei.common.exception.BizException;
 import com.hanserwei.common.model.vo.SelectRspVO;
 import com.hanserwei.common.utils.PageHelper;
 import com.hanserwei.common.utils.PageResponse;
@@ -21,6 +24,8 @@ public class AdminTagServiceImpl implements AdminTagService {
 
     @Resource
     private TagRepository tagRepository;
+    @Resource
+    private ArticleTagRelRepository articleTagRelRepository;
 
 
     /**
@@ -78,6 +83,11 @@ public class AdminTagServiceImpl implements AdminTagService {
 
     @Override
     public Response<?> deleteTag(DeleteTagReqVO deleteTagReqVO) {
+        // 检查是否有关联的文章
+        List<ArticleTagRel> articleTagRelsList = articleTagRelRepository.findByTagId(deleteTagReqVO.getId());
+        if (!articleTagRelsList.isEmpty()) {
+            throw new BizException(ResponseCodeEnum.TAG_HAS_ARTICLE);
+        }
 
         return tagRepository.findById(deleteTagReqVO.getId())
                 .map(tag -> {
@@ -92,7 +102,7 @@ public class AdminTagServiceImpl implements AdminTagService {
     public Response<List<SelectRspVO>> searchTag(SearchTagReqVO searchTagReqVO) {
         // 使用模糊查询获取标签列表
         List<Tag> tags = tagRepository.findByNameContaining(searchTagReqVO.getKey());
-        
+
         // 将标签转换为下拉列表格式
         List<SelectRspVO> vos = tags.stream()
                 .map(tag -> SelectRspVO.builder()
@@ -100,7 +110,19 @@ public class AdminTagServiceImpl implements AdminTagService {
                         .value(tag.getId())
                         .build())
                 .toList();
-        
+
+        return Response.success(vos);
+    }
+
+    @Override
+    public Response<List<FindTagsByIdsRspVO>> findTagsByIds(FindTagsByIdsReqVO findTagsByIdsReqVO) {
+        List<Tag> tags = tagRepository.queryAllByIdIn(findTagsByIdsReqVO.getTagIds());
+        List<FindTagsByIdsRspVO> vos = tags.stream()
+                .map(tag -> FindTagsByIdsRspVO.builder()
+                        .id(tag.getId())
+                        .name(tag.getName())
+                        .build())
+                .toList();
         return Response.success(vos);
     }
 }

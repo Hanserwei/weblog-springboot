@@ -1,9 +1,6 @@
 package com.hanserwei.admin.service;
 
-import com.hanserwei.admin.model.vo.category.AddCategoryReqVO;
-import com.hanserwei.admin.model.vo.category.DeleteCategoryReqVO;
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListReqVO;
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListRspVO;
+import com.hanserwei.admin.model.vo.category.*;
 import com.hanserwei.common.model.vo.SelectRspVO;
 import com.hanserwei.common.utils.PageResponse;
 import com.hanserwei.common.utils.Response;
@@ -40,6 +37,13 @@ public interface AdminCategoryService {
      *
      * @return Select 列表数据
      */
-    Response<List<SelectRspVO>>  findCategorySelectList();
+    Response<List<SelectRspVO>> findCategorySelectList();
 
+    /**
+     * 根据分类 ID 查询分类
+     *
+     * @param id 分类 ID
+     * @return 查询结果
+     */
+    Response<FindCategoryByIdRspVO> findCategoryById(Long id);
 }

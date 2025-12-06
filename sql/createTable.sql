@@ -125,7 +125,7 @@ CREATE TABLE t_tag
 -- 对应 MySQL 的 KEY `idx_create_time`
 CREATE INDEX idx_tag_create_time ON t_tag (create_time);
 
--- 3. 添加注释 (PostgreSQL 标准方式)
+-- 3. 添加注释 (PostgresSQL 标准方式)
 COMMENT ON TABLE t_tag IS '文章标签表';
 COMMENT ON COLUMN t_tag.id IS '标签id';
 COMMENT ON COLUMN t_tag.name IS '标签名称';
@@ -133,7 +133,7 @@ COMMENT ON COLUMN t_tag.create_time IS '创建时间';
 COMMENT ON COLUMN t_tag.update_time IS '最后一次更新时间';
 COMMENT ON COLUMN t_tag.is_deleted IS '逻辑删除标志位：FALSE：未删除 TRUE：已删除';
 
--- 4. 应用自动更新时间戳触发器 (体现 PostgreSQL 强大的过程语言优势)
+-- 4. 应用自动更新时间戳触发器 (体现 PostgresSQL 强大的过程语言优势)
 -- 前提：您之前已经执行过 CREATE FUNCTION set_update_time() ...
 CREATE TRIGGER set_t_tag_update_time
     BEFORE UPDATE
@@ -146,7 +146,7 @@ EXECUTE FUNCTION set_update_time();
 -- ====================================================================================================================
 CREATE TABLE t_blog_settings
 (
-    -- id: 使用 BIGSERIAL 自动管理序列
+    -- id: 使用 BIG SERIAL 自动管理序列
     id              BIGSERIAL PRIMARY KEY,
 
     -- logo: 图片路径可能很长，使用 TEXT 替代 VARCHAR(120)，无性能损耗
@@ -184,5 +184,139 @@ COMMENT ON COLUMN t_blog_settings.github_homepage IS 'GitHub 主页访问地址'
 COMMENT ON COLUMN t_blog_settings.csdn_homepage IS 'CSDN 主页访问地址';
 COMMENT ON COLUMN t_blog_settings.gitee_homepage IS 'Gitee 主页访问地址';
 COMMENT ON COLUMN t_blog_settings.zhihu_homepage IS '知乎主页访问地址';
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+CREATE TABLE t_article
+(
+    id          BIGSERIAL PRIMARY KEY,
+
+    -- 标题：保持限制，适合作为索引或列表显示
+    title       VARCHAR(120)             NOT NULL DEFAULT '',
+
+    -- 封面：使用 TEXT，不再担心 URL 超长
+    cover       TEXT                     NOT NULL DEFAULT '',
+
+    -- 摘要：使用 TEXT，不再受 160 字限制，前端截取即可
+    summary     TEXT                              DEFAULT '',
+
+    -- 阅读量：使用 INTEGER 配合 CHECK 约束模拟 unsigned
+    read_num    INTEGER                  NOT NULL DEFAULT 1 CHECK (read_num >= 0),
+
+    -- 时间与逻辑删除
+    create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_deleted  BOOLEAN                  NOT NULL DEFAULT FALSE
+);
+
+-- 索引
+CREATE INDEX idx_article_create_time ON t_article (create_time);
+
+-- 自动更新时间戳触发器
+CREATE TRIGGER set_t_article_update_time
+    BEFORE UPDATE
+    ON t_article
+    FOR EACH ROW
+EXECUTE FUNCTION set_update_time();
+
+-- 注释
+COMMENT ON TABLE t_article IS '文章表';
+COMMENT ON COLUMN t_article.read_num IS '被阅读次数 (>=0)';
+COMMENT ON COLUMN t_article.cover IS '文章封面';
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+CREATE TABLE t_article_content
+(
+    id         BIGSERIAL PRIMARY KEY,
+
+    -- 外键关联字段
+    article_id BIGINT NOT NULL,
+
+    -- 正文：PG 的 TEXT 能够容纳海量文字
+    content    TEXT,
+
+    -- 显式外键约束：确保 article_id 必须存在于 t_article 表中
+    -- ON DELETE CASCADE: 如果物理删除了 t_article，对应的内容也会被自动删除
+    CONSTRAINT fk_article_content_article_id
+        FOREIGN KEY (article_id)
+            REFERENCES t_article (id)
+            ON DELETE CASCADE
+);
+
+-- 索引
+CREATE INDEX idx_article_content_article_id ON t_article_content (article_id);
+
+-- 注释
+COMMENT ON TABLE t_article_content IS '文章内容表';
+COMMENT ON COLUMN t_article_content.content IS '教程正文';
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+CREATE TABLE t_article_category_rel
+(
+    id          BIGSERIAL PRIMARY KEY,
+
+    -- 文章 ID：添加外键，删除文章时自动删除此关联
+    article_id  BIGINT NOT NULL,
+
+    -- 分类 ID：添加外键，删除分类时... (通常分类不轻易删，或者策略不同，这里设为级联删除)
+    category_id BIGINT NOT NULL,
+
+    -- 约束：保证 article_id 唯一 (对应 MySQL 的 UNIQUE KEY)
+    CONSTRAINT uni_article_category_rel_article_id UNIQUE (article_id),
+
+    -- 外键定义
+    CONSTRAINT fk_rel_cat_article
+        FOREIGN KEY (article_id)
+            REFERENCES t_article (id)
+            ON DELETE CASCADE,
+
+    CONSTRAINT fk_rel_cat_category
+        FOREIGN KEY (category_id)
+            REFERENCES t_category (id)
+            ON DELETE CASCADE
+);
+
+-- 索引：category_id 需要索引以便反向查询（查询某分类下有哪些文章）
+CREATE INDEX idx_rel_cat_category_id ON t_article_category_rel (category_id);
+
+-- 注释
+COMMENT ON TABLE t_article_category_rel IS '文章所属分类关联表';
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+-- ====================================================================================================================
+CREATE TABLE t_article_tag_rel
+(
+    id         BIGSERIAL PRIMARY KEY,
+
+    article_id BIGINT NOT NULL,
+    tag_id     BIGINT NOT NULL,
+
+    -- 外键定义：级联删除
+    CONSTRAINT fk_rel_tag_article
+        FOREIGN KEY (article_id)
+            REFERENCES t_article (id)
+            ON DELETE CASCADE,
+
+    CONSTRAINT fk_rel_tag_tag
+        FOREIGN KEY (tag_id)
+            REFERENCES t_tag (id)
+            ON DELETE CASCADE,
+
+    -- ⚡ 优化：防止同一篇文章被打上重复的标签
+    CONSTRAINT uk_article_tag_rel_unique_pair UNIQUE (article_id, tag_id)
+);
+
+-- 索引
+CREATE INDEX idx_rel_tag_article_id ON t_article_tag_rel (article_id);
+CREATE INDEX idx_rel_tag_tag_id ON t_article_tag_rel (tag_id);
+
+-- 注释
+COMMENT ON TABLE t_article_tag_rel IS '文章对应标签关联表';
 -- ====================================================================================================================
 -- ====================================================================================================================

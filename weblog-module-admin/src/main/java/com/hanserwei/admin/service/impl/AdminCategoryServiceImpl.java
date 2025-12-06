@@ -1,11 +1,10 @@
 package com.hanserwei.admin.service.impl;
 
-import com.hanserwei.admin.model.vo.category.AddCategoryReqVO;
-import com.hanserwei.admin.model.vo.category.DeleteCategoryReqVO;
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListReqVO;
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListRspVO;
+import com.hanserwei.admin.model.vo.category.*;
 import com.hanserwei.admin.service.AdminCategoryService;
+import com.hanserwei.common.domain.dataobject.ArticleCategoryRel;
 import com.hanserwei.common.domain.dataobject.Category;
+import com.hanserwei.common.domain.repository.ArticleCategoryRelRepository;
 import com.hanserwei.common.domain.repository.CategoryRepository;
 import com.hanserwei.common.enums.ResponseCodeEnum;
 import com.hanserwei.common.exception.BizException;
@@ -26,6 +25,8 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Resource
     private CategoryRepository categoryRepository;
+    @Resource
+    private ArticleCategoryRelRepository articleCategoryRelRepository;
 
     @Override
     public Response<?> addCategory(AddCategoryReqVO addCategoryReqVO) {
@@ -60,6 +61,10 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
     @Override
     public Response<?> deleteCategory(DeleteCategoryReqVO deleteCategoryReqVO) {
+        List<ArticleCategoryRel> articleTagRelList = articleCategoryRelRepository.findByCategoryId((deleteCategoryReqVO.getId()));
+        if (!CollectionUtils.isEmpty(articleTagRelList)) {
+            throw new BizException(ResponseCodeEnum.CATEGORY_HAS_ARTICLE);
+        }
         return categoryRepository.findById(deleteCategoryReqVO.getId())
                 .map(tag -> {
                     tag.setIsDeleted(true);
@@ -83,5 +88,15 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
                     .toList();
         }
         return Response.success(selectRspVOS);
+    }
+
+    @Override
+    public Response<FindCategoryByIdRspVO> findCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new BizException(ResponseCodeEnum.CATEGORY_NOT_EXIST));
+        return Response.success(FindCategoryByIdRspVO.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build());
     }
 }

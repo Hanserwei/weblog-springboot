@@ -1,7 +1,5 @@
 package com.hanserwei.admin.controller;
 
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListReqVO;
-import com.hanserwei.admin.model.vo.category.FindCategoryPageListRspVO;
 import com.hanserwei.admin.model.vo.tag.*;
 import com.hanserwei.admin.service.AdminTagService;
 import com.hanserwei.common.aspect.ApiOperationLog;
@@ -63,5 +61,13 @@ public class AdminTagController {
         return adminTagService.searchTag(searchTagReqVO);
     }
 
+    /**
+     * 根据ID列表获取标签
+     */
+    @PostMapping("/tag/list/ids")
+    @ApiOperationLog(description = "根据ID列表获取标签")
+    public Response<List<FindTagsByIdsRspVO>> findTagsByIds(@RequestBody @Validated FindTagsByIdsReqVO findTagsByIdsReqVO) {
+        return adminTagService.findTagsByIds(findTagsByIdsReqVO);
+    }
 
 }

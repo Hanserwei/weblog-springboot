@@ -39,4 +39,12 @@ public interface AdminTagService {
      * @return 响应结果
      */
     Response<List<SelectRspVO>> searchTag(SearchTagReqVO searchTagReqVO);
+
+    /**
+     * 根据 ID 列表获取标签
+     *
+     * @param findTagsByIdsReqVO 根据 ID 列表获取标签请求参数
+     * @return 响应结果
+     */
+    Response<List<FindTagsByIdsRspVO>> findTagsByIds(FindTagsByIdsReqVO findTagsByIdsReqVO);
 }

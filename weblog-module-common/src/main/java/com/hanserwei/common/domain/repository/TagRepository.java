@@ -22,4 +22,5 @@ public interface TagRepository extends JpaRepository<Tag, Long>, JpaSpecificatio
      */
     List<Tag> findByNameContaining(String name);
 
+    List<Tag> queryAllByIdIn(Collection<Long> ids);
 }

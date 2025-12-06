@@ -25,20 +25,22 @@ public class PageHelper {
     /**
      * 执行带条件的分页查询
      *
-     * @param repository    JPA Repository
-     * @param pageQuery     分页查询参数
-     * @param name          名称（用于模糊查询）
-     * @param startDate     开始日期
-     * @param endDate       结束日期
-     * @param converter     DO 到 VO 的转换函数
-     * @param <T>           实体类型
-     * @param <R>           响应VO类型
+     * @param repository  JPA Repository
+     * @param pageQuery   分页查询参数
+     * @param searchText  搜索文本（用于模糊查询）
+     * @param searchField 搜索字段名称（如 "name"、"title" 等）
+     * @param startDate   开始日期
+     * @param endDate     结束日期
+     * @param converter   DO 到 VO 的转换函数
+     * @param <T>         实体类型
+     * @param <R>         响应VO类型
      * @return 分页响应
      */
     public static <T, R> PageResponse<R> findPageList(
             JpaSpecificationExecutor<T> repository,
             BasePageQuery pageQuery,
-            String name,
+            String searchText,
+            String searchField,
             LocalDate startDate,
             LocalDate endDate,
             Function<T, R> converter) {
@@ -54,10 +56,10 @@ public class PageHelper {
         Specification<T> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // 名称模糊查询
-            if (StringUtils.hasText(name)) {
+            // 搜索文本模糊查询
+            if (StringUtils.hasText(searchText) && StringUtils.hasText(searchField)) {
                 predicates.add(
-                        criteriaBuilder.like(root.get("name"), "%" + name.trim() + "%")
+                        criteriaBuilder.like(root.get(searchField), "%" + searchText.trim() + "%")
                 );
             }
 
@@ -87,5 +89,28 @@ public class PageHelper {
                 .toList();
 
         return PageResponse.success(page, vos);
+    }
+
+    /**
+     * 执行带条件的分页查询（使用默认字段名 "name"）
+     *
+     * @param repository JPA Repository
+     * @param pageQuery  分页查询参数
+     * @param name       名称（用于模糊查询）
+     * @param startDate  开始日期
+     * @param endDate    结束日期
+     * @param converter  DO 到 VO 的转换函数
+     * @param <T>        实体类型
+     * @param <R>        响应VO类型
+     * @return 分页响应
+     */
+    public static <T, R> PageResponse<R> findPageList(
+            JpaSpecificationExecutor<T> repository,
+            BasePageQuery pageQuery,
+            String name,
+            LocalDate startDate,
+            LocalDate endDate,
+            Function<T, R> converter) {
+        return findPageList(repository, pageQuery, name, "name", startDate, endDate, converter);
     }
 }
